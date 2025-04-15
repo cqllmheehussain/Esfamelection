@@ -1,0 +1,302 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - ESFAM Voting</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Inline CSS (same as index) -->
+  <style>
+    /* ===== Base Styles ===== */
+    :root {
+      --primary: #2c3e50;
+      --secondary: #e74c3c;
+      --accent: #3498db;
+      --light: #f8f9fa;
+      --dark: #2c3e50;
+      --text-dark: #2d3436;
+      --text-light: #ffffff;
+      --shadow: 0 10px 20px rgba(0,0,0,0.1);
+      --radius: 15px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    body {
+      background: var(--light);
+      color: var(--text-dark);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* ===== Header Styles ===== */
+    .main-header {
+      background: var(--text-light);
+      box-shadow: var(--shadow);
+      padding: 1rem 5%;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .brand-logo {
+      height: 50px;
+      transition: var(--transition);
+    }
+    
+    .nav-menu {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+    
+    .nav-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      transition: var(--transition);
+    }
+    
+    .nav-link:hover {
+      background: var(--light);
+      color: var(--accent);
+    }
+    
+    /* ===== Admin Login Section ===== */
+    .admin-login-section {
+      padding: 4rem 5%;
+      text-align: center;
+    }
+    
+    .admin-login-section h1 {
+      margin-bottom: 2rem;
+      font-size: 2.5rem;
+      color: var(--primary);
+    }
+    
+    .full-width-input {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      border: 1px solid #ddd;
+      border-radius: var(--radius);
+    }
+    
+    .cta-btn {
+      background: var(--secondary);
+      color: var(--text-light);
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .cta-btn:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+    
+    /* ===== Admin Dashboard Section ===== */
+    .admin-dashboard {
+      padding: 4rem 5%;
+      text-align: center;
+      display: none;
+    }
+    
+    .admin-dashboard h2 {
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      color: var(--primary);
+    }
+    
+    .result-card {
+      background: var(--text-light);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      text-align: left;
+      max-width: 600px;
+      margin: 1rem auto;
+    }
+    
+    .result-card h3 {
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+    
+    .result-card p {
+      margin-bottom: 0.5rem;
+    }
+
+    /* ===== Add Candidate Form ===== */
+    .add-candidate-form {
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .add-candidate-form input,
+    .add-candidate-form textarea {
+      width: 80%;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      border: 1px solid #ddd;
+      border-radius: var(--radius);
+    }
+
+    .add-candidate-form button {
+      width: 40%;
+      padding: 1rem 2rem;
+      background-color: var(--secondary);
+      color: var(--text-light);
+      font-size: 1.2rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+    }
+
+    .add-candidate-form button:hover {
+      transform: scale(1.05);
+    }
+
+  </style>
+</head>
+<body>
+  <header class="main-header">
+    <img src="logo.png" alt="ESFAM Logo" class="brand-logo">
+    <nav class="nav-menu">
+      <a href="index.html" class="nav-link">Home</a>
+    </nav>
+  </header>
+  
+  <main>
+    <section class="admin-login-section" id="adminLoginSection">
+      <h1>Admin Login</h1>
+      <form id="adminLoginForm">
+        <input type="text" id="adminUsername" class="full-width-input" placeholder="Username" required>
+        <input type="password" id="adminPassword" class="full-width-input" placeholder="Password" required>
+        <button type="submit" class="cta-btn">Login</button>
+      </form>
+    </section>
+    
+    <section class="admin-dashboard" id="adminDashboard">
+      <h2>Voting Results</h2>
+      <div id="resultsContainer"></div>
+
+      <h3>Add New Candidate</h3>
+      <form class="add-candidate-form" id="addCandidateForm">
+        <input type="text" id="candidateName" placeholder="Candidate Name" required>
+        <input type="text" id="candidatePosition" placeholder="Candidate Position" required>
+        <textarea id="candidateDescription" placeholder="Candidate Description" required></textarea>
+        <input type="file" id="candidateImage" accept="image/*" required>
+        <button type="submit">Add Candidate</button>
+      </form>
+    </section>
+  </main>
+  
+  <footer class="main-footer">
+    <p>&copy; 2025 ESFAM Voting System. All rights reserved.</p>
+  </footer>
+  
+  <!-- Inline JavaScript for Admin -->
+  <script>
+    // Hardcoded admin credentials
+    const adminCredentials = {
+      username: "vote@admin",
+      password: "Vote@admin"
+    };
+    
+    // Admin login validation
+    document.getElementById("adminLoginForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const username = document.getElementById("adminUsername").value;
+      const password = document.getElementById("adminPassword").value;
+      if (username === adminCredentials.username && password === adminCredentials.password) {
+        document.getElementById("adminDashboard").style.display = "block";
+        document.getElementById("adminLoginSection").style.display = "none";
+        displayAdminResults();
+      } else {
+        alert("Invalid admin credentials");
+      }
+    });
+    
+    // Function to display voting results (retrieves candidate data from localStorage)
+    function displayAdminResults() {
+      const resultsContainer = document.getElementById("resultsContainer");
+      resultsContainer.innerHTML = "";
+      // Retrieve candidate votes from localStorage (or use default if missing)
+      let candidates = JSON.parse(localStorage.getItem("candidateVotes")) || [];
+      candidates.forEach(candidate => {
+        resultsContainer.innerHTML += `
+          <div class="result-card">
+            <h3>${candidate.name}</h3>
+            <p>Position: ${candidate.position}</p>
+            <p>Description: ${candidate.description}</p>
+            <p>Votes: ${candidate.votes}</p>
+            <img src="${candidate.image}" alt="${candidate.name}" style="max-width: 100px; height: auto; border-radius: 10px;">
+          </div>
+        `;
+      });
+    }
+
+    // Function to handle adding new candidates
+    document.getElementById("addCandidateForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const name = document.getElementById("candidateName").value;
+      const position = document.getElementById("candidatePosition").value;
+      const description = document.getElementById("candidateDescription").value;
+      const imageFile = document.getElementById("candidateImage").files[0];
+
+      // Validate inputs
+      if (!name || !position || !description || !imageFile) {
+        alert("Please fill all fields.");
+        return;
+      }
+
+      // Convert image file to base64 string for storage
+      const reader = new FileReader();
+      reader.onloadend = function () {
+        const imageBase64 = reader.result;
+
+        // Retrieve existing candidates from localStorage
+        let candidates = JSON.parse(localStorage.getItem("candidateVotes")) || [];
+
+        // Add new candidate
+        candidates.push({
+          name,
+          position,
+          description,
+          image: imageBase64,
+          votes: 0 // Initial votes set to 0
+        });
+
+        // Save updated candidates back to localStorage
+        localStorage.setItem("candidateVotes", JSON.stringify(candidates));
+
+        // Clear form and refresh results
+        document.getElementById("addCandidateForm").reset();
+        displayAdminResults();
+      };
+      
+      reader.readAsDataURL(imageFile); // Read the image as base64
+    });
+  </script>
+</body>
+</html>

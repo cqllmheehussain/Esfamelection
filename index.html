@@ -1,0 +1,508 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESFAM Digital Voting</title>
+  <!-- Inline CSS -->
+  <style>
+    /* ===== Base Styles ===== */
+    :root {
+      --primary: #2c3e50;
+      --secondary: #e74c3c;
+      --accent: #3498db;
+      --light: #f8f9fa;
+      --dark: #2c3e50;
+      --text-dark: #2d3436;
+      --text-light: #ffffff;
+      --shadow: 0 10px 20px rgba(0,0,0,0.1);
+      --radius: 15px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    body {
+      background: var(--light);
+      color: var(--text-dark);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* ===== Header Styles ===== */
+    .main-header {
+      background: var(--text-light);
+      box-shadow: var(--shadow);
+      padding: 1rem 5%;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .brand-logo {
+      height: 50px;
+      transition: var(--transition);
+    }
+    
+    .nav-menu {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+    
+    .nav-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      transition: var(--transition);
+    }
+    
+    .nav-link:hover {
+      background: var(--light);
+      color: var(--accent);
+    }
+    
+    /* ===== Hero Section ===== */
+    .hero-section {
+      padding: 8rem 5% 4rem;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: var(--text-light);
+      text-align: center;
+    }
+    
+    .hero-title {
+      font-size: 2.8rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+    }
+    
+    .hero-text {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+    }
+    
+    /* ===== Timer ===== */
+    .timer-container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1.5rem;
+      border-radius: var(--radius);
+      margin: 2rem auto;
+      max-width: 600px;
+    }
+    
+    .timer-display {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      font-size: 2rem;
+      font-weight: 600;
+    }
+    
+    /* ===== Candidates Grid ===== */
+    .candidates-section {
+      padding: 4rem 5%;
+    }
+    
+    .section-title {
+      text-align: center;
+      font-size: 2.2rem;
+      margin-bottom: 3rem;
+      color: var(--primary);
+    }
+    
+    .candidates-grid {
+      display: grid;
+      gap: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .candidate-card {
+      background: var(--text-light);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    
+    .candidate-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .candidate-image {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      border-bottom: 3px solid var(--accent);
+    }
+    
+    .candidate-info {
+      padding: 1.5rem;
+    }
+    
+    .candidate-name {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+    
+    .candidate-platform {
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+    
+    .vote-count {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 1rem;
+      color: var(--secondary);
+      font-weight: 600;
+    }
+    
+    /* ===== Modal Styles ===== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+    
+    .modal-content {
+      background: var(--text-light);
+      padding: 2rem;
+      border-radius: var(--radius);
+      width: 90%;
+      max-width: 400px;
+      position: relative;
+    }
+    
+    .modal-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    
+    /* ===== Buttons ===== */
+    .cta-btn {
+      background: var(--secondary);
+      color: var(--text-light);
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .cta-btn:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+    
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+    }
+    
+    .btn-secondary {
+      background: var(--light);
+      color: var(--text-dark);
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+    }
+    
+    /* ===== Form Elements ===== */
+    .full-width-input {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      border: 1px solid #ddd;
+      border-radius: var(--radius);
+    }
+    
+    .error-msg {
+      color: var(--secondary);
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      display: none;
+    }
+    
+    /* ===== Footer ===== */
+    .main-footer {
+      background: var(--primary);
+      color: var(--text-light);
+      padding: 2rem 5%;
+      text-align: center;
+    }
+    
+    .footer-text {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+    
+    .footer-link {
+      color: var(--text-light);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    
+    .footer-link:hover {
+      color: var(--accent);
+    }
+    
+    /* ===== Responsiveness for Mobile and Tablets ===== */
+    @media (max-width: 768px) {
+      .nav-menu {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    
+      .candidates-grid {
+        grid-template-columns: 1fr;
+      }
+    
+      .hero-title {
+        font-size: 2.2rem;
+      }
+    
+      .hero-text {
+        font-size: 1rem;
+      }
+    
+      .timer-container {
+        padding: 1rem;
+      }
+    
+      .footer-links {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="main-header">
+    <img src="logo.png" alt="ESFAM Logo" class="brand-logo">
+    <nav class="nav-menu">
+      <a href="#" class="nav-link">Home</a>
+      <a href="#vote" class="nav-link" id="voteTrigger">Vote Now</a>
+      <a href="admin.html" class="nav-link">Admin</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero-section">
+      <div class="hero-content">
+        <h1 class="hero-title">Welcome to ESFAM Student Union Elections 2025</h1>
+        <p class="hero-text">Your vote counts! Participate now to elect your next leader.</p>
+        <div class="timer-container">
+          <div class="timer-display">
+            <div><span id="hours">04</span>h</div>
+            <div><span id="minutes">00</span>m</div>
+            <div><span id="seconds">00</span>s</div>
+          </div>
+        </div>
+        <button class="cta-btn" id="startVotingBtn">Start Voting</button>
+      </div>
+    </section>
+
+    <section class="candidates-section" id="vote">
+      <h2 class="section-title">Candidates</h2>
+      <div class="candidates-grid" id="candidatesContainer"></div>
+    </section>
+
+    <!-- Modal for Student Verification -->
+    <div class="modal-overlay" id="matricModal">
+      <div class="modal-content">
+        <h2>Student Verification</h2>
+        <input type="text" id="matricInput" class="full-width-input" placeholder="Enter Matric Number (ESFAM/VOTE/001 - ESFAM/VOTE/010)">
+        <p class="error-msg" id="matricError"></p>
+        <div class="modal-actions">
+          <button class="btn-primary" onclick="validateMatric()">Verify</button>
+          <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="main-footer">
+    <p>&copy; 2025 ESFAM Voting System. All rights reserved.</p>
+  </footer>
+
+  <!-- Inline JavaScript -->
+  <script>
+    /********************
+     * Global Variables *
+     ********************/
+    // Default candidate data with different positions and image filenames (01.jpg to 05.jpg)
+    const defaultCandidates = [
+      { id: 1, name: "John Doe", position: "President", description: "I will work tirelessly to improve student welfare.", image: "01.jpg", votes: 0 },
+      { id: 2, name: "Jane Smith", position: "Vice President", description: "I pledge to enhance academic opportunities and campus life.", image: "02.jpg", votes: 0 },
+      { id: 3, name: "Ahmed Ali", position: "Secretary", description: "I aim to increase student participation and transparency.", image: "03.jpg", votes: 0 },
+      { id: 4, name: "Maryam Ibrahim", position: "Treasurer", description: "I promise efficient management of student funds.", image: "04.jpg", votes: 0 },
+      { id: 5, name: "Blessings Samuel Ezekiel", position: "Public Relations Officer", description: "I will improve communication between students and the administration.", image: "05.jpg", votes: 0 }
+    ];
+    
+    // Allowed matric numbers for verification
+    const allowedMatricNumbers = [
+      "ESFAM/VOTE/001", "ESFAM/VOTE/002", "ESFAM/VOTE/003", "ESFAM/VOTE/004",
+      "ESFAM/VOTE/005", "ESFAM/VOTE/006", "ESFAM/VOTE/007", "ESFAM/VOTE/008",
+      "ESFAM/VOTE/009", "ESFAM/VOTE/010"
+    ];
+    
+    // Load candidate data from localStorage or default if not available
+    let candidates = JSON.parse(localStorage.getItem("candidateVotes")) || defaultCandidates;
+    
+    // Track which matric numbers have voted and for which candidates
+    let votedMatricNumbers = JSON.parse(localStorage.getItem("votedMatricNumbers")) || [];
+    
+    // Save candidates data to localStorage
+    function updateCandidateStorage() {
+      localStorage.setItem("candidateVotes", JSON.stringify(candidates));
+    }
+    
+    // Save voted matric numbers
+    function updateVotedMatricStorage() {
+      localStorage.setItem("votedMatricNumbers", JSON.stringify(votedMatricNumbers));
+    }
+    
+    /*********************
+     * Timer Function    *
+     *********************/
+    let electionDuration = 14400; // 4 hours in seconds
+    function updateTimer() {
+      const hours = Math.floor(electionDuration / 3600);
+      const minutes = Math.floor((electionDuration % 3600) / 60);
+      const seconds = electionDuration % 60;
+      document.getElementById("hours").textContent = hours.toString().padStart(2, "0");
+      document.getElementById("minutes").textContent = minutes.toString().padStart(2, "0");
+      document.getElementById("seconds").textContent = seconds.toString().padStart(2, "0");
+      if (electionDuration <= 0) {
+        document.getElementById("startVotingBtn").disabled = true;
+        clearInterval(timerInterval);
+      }
+      electionDuration--;
+    }
+    let timerInterval = setInterval(updateTimer, 1000);
+    
+    /***********************
+     * Candidate Functions *
+     ***********************/
+    function displayCandidates() {
+      const container = document.getElementById("candidatesContainer");
+      if (!container) return;
+      container.innerHTML = "";
+      candidates.forEach(candidate => {
+        container.innerHTML += `
+          <div class="candidate-card">
+            <img src="${candidate.image}" alt="${candidate.name}" class="candidate-image">
+            <div class="candidate-info">
+              <h3 class="candidate-name">${candidate.name}</h3>
+              <p class="candidate-platform">${candidate.position}</p>
+              <p>${candidate.description}</p>
+              <p class="vote-count">Votes: ${candidate.votes}</p>
+              <button class="cta-btn" onclick="voteForCandidate(${candidate.id})">Vote Now</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+    displayCandidates();
+    
+    /**********************
+     * Modal Functionality *
+     **********************/
+    const modal = document.getElementById("matricModal");
+    if (document.getElementById("startVotingBtn")) {
+      document.getElementById("startVotingBtn").addEventListener("click", function() {
+        modal.style.display = "flex";
+      });
+    }
+    function closeModal() {
+      modal.style.display = "none";
+    }
+    
+    /***************************
+     * Matric Verification    *
+     ***************************/
+    function validateMatric() {
+      const matricInput = document.getElementById("matricInput").value.trim();
+      const errorMsg = document.getElementById("matricError");
+      if (!allowedMatricNumbers.includes(matricInput)) {
+        errorMsg.textContent = "PLEASE ENTER A VALID MATRIC TO VOTE";
+        errorMsg.style.display = "block";
+      } else {
+        errorMsg.style.display = "none";
+        modal.style.display = "none";
+        alert("Matric verification successful! You may now vote.");
+      }
+    }
+    
+    /*********************
+     * Voting Function   *
+     *********************/
+    function voteForCandidate(candidateId) {
+      const matricInput = document.getElementById("matricInput").value.trim();
+      if (!allowedMatricNumbers.includes(matricInput)) {
+        alert("You must verify your matric number before voting.");
+        return;
+      }
+
+      // Check if the matric number has already voted for this candidate
+      if (votedMatricNumbers.some(vote => vote.matric === matricInput && vote.candidateId === candidateId)) {
+        alert("You have already voted for this candidate.");
+        return;
+      }
+
+      // Record the vote
+      const candidateIndex = candidates.findIndex(c => c.id === candidateId);
+      if (candidateIndex > -1) {
+        candidates[candidateIndex].votes++;
+        updateCandidateStorage();
+        
+        // Track the vote for the candidate and matric number
+        votedMatricNumbers.push({ matric: matricInput, candidateId });
+        updateVotedMatricStorage();
+        
+        alert("Vote recorded successfully!");
+        displayCandidates();
+      }
+    }
+</script>
+
+</body>
+</html>
